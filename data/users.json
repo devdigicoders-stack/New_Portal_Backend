@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "name": "Super Admin",
+    "email": "admin@newsportal.com",
+    "password": "$2a$10$ryb3PM9MXa3IKOog53CbfON91fCBPosxqUDjxrHD/05zrO0gncoE2",
+    "role": "admin",
+    "savedNews": [],
+    "likedNews": []
+  },
+  {
+    "id": 2,
+    "name": "Senior Editor",
+    "email": "editor@newsportal.com",
+    "password": "$2a$10$xUZcKH0evfHWUnZppambTeuuHD8Xg/s3.yMypu8q0b80rTKph6Ef.",
+    "role": "editor",
+    "savedNews": [],
+    "likedNews": []
+  },
+  {
+    "id": 3,
+    "name": "Field Reporter",
+    "email": "reporter@newsportal.com",
+    "password": "$2a$10$7uXDHzLIi9IEYDkkVqP7ZemIkGnmaovlv6YzbN2C3U85grsyGGVMi",
+    "role": "reporter",
+    "savedNews": [],
+    "likedNews": []
+  },
+  {
+    "id": 4,
+    "name": "Standard User",
+    "email": "user@newsportal.com",
+    "password": "$2a$10$JbuibQPvtRy85djlpDG4eeoD05iFC55zPBeImsQvQj6sD1BGE.XAC",
+    "role": "user",
+    "savedNews": [],
+    "likedNews": []
+  },
+  {
+    "name": "Aman Kumar",
+    "email": "aman@gmail.com",
+    "password": "$2a$10$BVQM2Tqv5UjNgqqxvFkZSumnk/kFmzfurdT1MAWlwSpfcuwwIjcgG",
+    "role": "admin",
+    "savedNews": [],
+    "likedNews": [],
+    "id": 5
+  },
+  {
+    "name": "Mayank Pandey",
+    "email": "news@portal.com",
+    "password": "$2a$10$kKF0U7qyESZYNYBMEZLLyu5sHhxDjwJl9UQs00Mz.V0uouNPGudw.",
+    "role": "admin",
+    "savedNews": [],
+    "likedNews": [],
+    "id": 6
+  }
+]

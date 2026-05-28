@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "user": "Super Admin",
+    "action": "System initialized and seeded default news and staff accounts.",
+    "date": "2026-05-27T09:52:43.240Z"
+  },
+  {
+    "user": "System CLI",
+    "action": "Created new Admin account: \"Aman Kumar\" (aman@gmail.com)",
+    "date": "2026-05-27T10:04:26.000Z",
+    "id": 2
+  },
+  {
+    "user": "System CLI",
+    "action": "Created new Admin account: \"Mayank Pandey\" (news@portal.com)",
+    "date": "2026-05-27T10:05:45.266Z",
+    "id": 3
+  },
+  {
+    "user": "API Endpoint",
+    "action": "Upgraded user \"Mayank Pandey\" role to admin.",
+    "date": "2026-05-27T10:16:42.751Z",
+    "id": 4
+  }
+]
