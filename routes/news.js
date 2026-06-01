@@ -522,4 +522,62 @@ router.post('/:id/save', authenticate, async (req, res) => {
   }
 });
 
+// GET all reader comments across all articles (Editor & Admin only)
+router.get('/comments/all', authenticate, authorize(['editor', 'admin']), async (req, res) => {
+  try {
+    const articles = await News.find({ 'comments.0': { $exists: true } });
+    let allComments = [];
+    
+    articles.forEach(article => {
+      article.comments.forEach(comment => {
+        allComments.push({
+          id: comment.id,
+          user: comment.user,
+          text: comment.text,
+          date: comment.date,
+          articleId: article.id,
+          articleTitle: article.title
+        });
+      });
+    });
+    
+    // Sort comments by ID descending (newest first)
+    allComments.sort((a, b) => b.id - a.id);
+    res.json(allComments);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error fetching all reader comments.' });
+  }
+});
+
+// DELETE/moderate reader comment from an article (Editor & Admin only)
+router.delete('/:id/comments/:commentId', authenticate, authorize(['editor', 'admin']), async (req, res) => {
+  try {
+    const articleId = parseInt(req.params.id);
+    const commentId = parseInt(req.params.commentId);
+
+    const article = await News.findOne({ id: articleId });
+    if (!article) {
+      return res.status(404).json({ error: 'Article not found.' });
+    }
+
+    const initialLength = article.comments.length;
+    article.comments = article.comments.filter(c => c.id !== commentId);
+
+    if (article.comments.length === initialLength) {
+      return res.status(404).json({ error: 'Comment not found.' });
+    }
+
+    await article.save();
+
+    await Activity.create({
+      user: req.user.name,
+      action: `Moderated & deleted reader comment by "${req.user.name}" on article: "${article.title}"`
+    });
+
+    res.json({ message: 'Comment moderated and deleted successfully!' });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error deleting reader comment.' });
+  }
+});
+
 export default router;
