@@ -54,6 +54,61 @@ router.post('/create-admin', async (req, res) => {
   }
 });
 
+// 1.5. Create SuperAdmin (First time setup - No auth required)
+router.post('/create-superadmin', async (req, res) => {
+  const { name, email, password } = req.body;
+  
+  if (!name || !email || !password) {
+    return res.status(400).json({ error: 'Name, email, and password are required fields.' });
+  }
+
+  if (password.length < 8) {
+    return res.status(400).json({ error: 'Password must be at least 8 characters.' });
+  }
+
+  try {
+    // Check if any admin already exists
+    const adminExists = await User.findOne({ role: 'admin' });
+    if (adminExists) {
+      return res.status(403).json({ error: 'SuperAdmin already exists. Use /create-admin endpoint instead.' });
+    }
+
+    // Check if email already exists
+    const existing = await User.findOne({ email: email.toLowerCase() });
+    if (existing) {
+      return res.status(400).json({ error: 'Email already registered.' });
+    }
+
+    const hashed = bcrypt.hashSync(password, 10);
+    const newSuperAdmin = await User.create({
+      name,
+      email: email.toLowerCase(),
+      password: hashed,
+      role: 'admin',
+      isApproved: true,
+      savedNews: [],
+      likedNews: []
+    });
+
+    await Activity.create({
+      user: 'System',
+      action: `SuperAdmin account created: "${name}" (${email})`
+    });
+
+    res.status(201).json({
+      message: 'SuperAdmin account created successfully!',
+      user: { 
+        id: newSuperAdmin._id, 
+        name: newSuperAdmin.name, 
+        email: newSuperAdmin.email, 
+        role: newSuperAdmin.role 
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error creating superadmin account.' });
+  }
+});
+
 // 2. Dashboard Statistics & Overview (Admin/Editor only)
 router.get('/dashboard-stats', authenticate, authorize(['admin', 'editor']), async (req, res) => {
   try {

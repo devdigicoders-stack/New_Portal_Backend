@@ -1,148 +1,130 @@
 {
   "info": {
-    "_postman_id": "newsportal-ultimate-complete-2026",
-    "name": "NewsPortal - Ultimate Complete API Collection",
-    "description": "📰 NewsPortal Backend Ultimate API - Saare endpoints with real request bodies and scheduled publishing support.\nBase URL: http://localhost:8000\n\n🔑 Auth Flow:\n1. Pehle Login/Register karo → Token milega\n2. Baaki APIs mein Bearer Token header mein daalo\n\n👥 Roles: admin | editor | reporter | user",
+    "_postman_id": "newsportal-complete-api",
+    "name": "NewsPortal Complete API",
+    "description": "Complete API collection with real request bodies",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
-  "variable": [
-    {
-      "key": "BASE_URL",
-      "value": "http://localhost:8000",
-      "type": "string",
-      "description": "Backend server base URL (PORT=8000 from .env)"
-    },
-    {
-      "key": "jwt_token",
-      "value": "PASTE_YOUR_TOKEN_HERE_AFTER_LOGIN",
-      "type": "string",
-      "description": "JWT Token - Login ke baad copy karke yahan paste karo"
-    },
-    {
-      "key": "target_user_id",
-      "value": "PASTE_MONGODB_USER_ID_HERE",
-      "type": "string",
-      "description": "MongoDB ObjectId of target user (e.g. 6650abc123def456)"
-    },
-    {
-      "key": "news_id",
-      "value": "1",
-      "type": "string",
-      "description": "Article ka custom numeric ID (1, 2, 3...)"
-    }
-  ],
   "item": [
     {
-      "name": "📁 01 - Authentication (Auth)",
-      "description": "Register, Login, Profile, Change Password",
+      "name": "1. SETUP - Create SuperAdmin",
       "item": [
         {
-          "name": "✅ Register New User (Public)",
+          "name": "Create SuperAdmin (First Time)",
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Rahul Sharma\",\n  \"email\": \"rahul@gmail.com\",\n  \"password\": \"rahul123\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "raw": "{\n  \"name\": \"Super Admin\",\n  \"email\": \"admin@newsportal.com\",\n  \"password\": \"AdminPass@123\"\n}"
             },
             "url": {
-              "raw": "{{BASE_URL}}/api/auth/register",
-              "host": ["{{BASE_URL}}"],
+              "raw": "http://localhost:5000/api/users/create-superadmin",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "users", "create-superadmin"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. AUTH - Login & Register",
+      "item": [
+        {
+          "name": "Admin Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@newsportal.com\",\n  \"password\": \"AdminPass@123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "User Registration",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"Password@123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/register",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
               "path": ["api", "auth", "register"]
             }
           }
         },
         {
-          "name": "🔐 Login - Admin",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"admin@newsportal.com\",\n  \"password\": \"admin123\"\n}",
-              "options": { "raw": { "language": "json" } }
-            },
-            "url": {
-              "raw": "{{BASE_URL}}/api/auth/login",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "auth", "login"]
-            }
-          }
-        },
-        {
-          "name": "🔐 Login - Reporter (Approval Required)",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"reporter@newsportal.com\",\n  \"password\": \"reporter123\"\n}",
-              "options": { "raw": { "language": "json" } }
-            },
-            "url": {
-              "raw": "{{BASE_URL}}/api/auth/login",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "auth", "login"]
-            },
-            "description": "Reporters registered/created start as unapproved and will fail login until approved by Admin."
-          }
-        },
-        {
-          "name": "🔐 Login - Editor",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"editor@newsportal.com\",\n  \"password\": \"editor123\"\n}",
-              "options": { "raw": { "language": "json" } }
-            },
-            "url": {
-              "raw": "{{BASE_URL}}/api/auth/login",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "auth", "login"]
-            }
-          }
-        },
-        {
-          "name": "👤 Get My Profile (Token Required)",
+          "name": "Get My Profile",
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
             ],
             "url": {
-              "raw": "{{BASE_URL}}/api/auth/me",
-              "host": ["{{BASE_URL}}"],
+              "raw": "http://localhost:5000/api/auth/me",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
               "path": ["api", "auth", "me"]
             }
           }
         },
         {
-          "name": "🔒 Change Password (Token Required)",
+          "name": "Change Password",
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"oldPassword\": \"admin123\",\n  \"newPassword\": \"admin_new_pass_2026\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "raw": "{\n  \"oldPassword\": \"AdminPass@123\",\n  \"newPassword\": \"NewAdminPass@456\"\n}"
             },
             "url": {
-              "raw": "{{BASE_URL}}/api/auth/change-password",
-              "host": ["{{BASE_URL}}"],
+              "raw": "http://localhost:5000/api/auth/change-password",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
               "path": ["api", "auth", "change-password"]
             }
           }
@@ -150,478 +132,763 @@
       ]
     },
     {
-      "name": "📁 02 - Users & Role Management (Admin Only)",
-      "description": "Admins approve reporters, toggle roles, view stats, manage accounts.",
+      "name": "3. ADMIN DASHBOARD",
       "item": [
         {
-          "name": "📊 Dashboard Statistics (Admin/Editor)",
+          "name": "Get Dashboard Statistics",
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
             ],
             "url": {
-              "raw": "{{BASE_URL}}/api/users/dashboard-stats",
-              "host": ["{{BASE_URL}}"],
+              "raw": "http://localhost:5000/api/users/dashboard-stats",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
               "path": ["api", "users", "dashboard-stats"]
             }
           }
-        },
+        }
+      ]
+    },
+    {
+      "name": "4. MANAGE USERS",
+      "item": [
         {
-          "name": "➕ Create Reporter Account (Unapproved by default)",
+          "name": "Create User",
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Suresh Patel\",\n  \"email\": \"suresh@newsportal.com\",\n  \"password\": \"reporter123\",\n  \"role\": \"reporter\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "raw": "{\n  \"name\": \"Rahul Sharma\",\n  \"email\": \"rahul@newsportal.com\",\n  \"password\": \"ReporterPass@123\",\n  \"role\": \"reporter\"\n}"
             },
             "url": {
-              "raw": "{{BASE_URL}}/api/users",
-              "host": ["{{BASE_URL}}"],
+              "raw": "http://localhost:5000/api/users",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
               "path": ["api", "users"]
             }
           }
         },
         {
-          "name": "✔️ Toggle User/Reporter Approval (Admin Only)",
-          "request": {
-            "method": "PUT",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"isApproved\": true\n}",
-              "options": { "raw": { "language": "json" } }
-            },
-            "url": {
-              "raw": "{{BASE_URL}}/api/users/{{target_user_id}}/approve",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "users", "{{target_user_id}}", "approve"]
-            },
-            "description": "Approve reporters so they can login and use the panel successfully."
-          }
-        },
-        {
-          "name": "📋 Get All Users List (Admin)",
+          "name": "List All Users",
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
             ],
             "url": {
-              "raw": "{{BASE_URL}}/api/users",
-              "host": ["{{BASE_URL}}"],
+              "raw": "http://localhost:5000/api/users",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
               "path": ["api", "users"]
             }
           }
         },
         {
-          "name": "📋 Get Pending Unapproved Users (Admin)",
+          "name": "List Reporters",
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
             ],
             "url": {
-              "raw": "{{BASE_URL}}/api/users?approved=false",
-              "host": ["{{BASE_URL}}"],
+              "raw": "http://localhost:5000/api/users?role=reporter",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
               "path": ["api", "users"],
               "query": [
-                { "key": "approved", "value": "false" }
-              ]
-            }
-          }
-        },
-        {
-          "name": "✏️ Update User Profile (Admin)",
-          "request": {
-            "method": "PUT",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Suresh Patel Updated\",\n  \"role\": \"editor\"\n}",
-              "options": { "raw": { "language": "json" } }
-            },
-            "url": {
-              "raw": "{{BASE_URL}}/api/users/{{target_user_id}}",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "users", "{{target_user_id}}"]
-            }
-          }
-        },
-        {
-          "name": "🗑️ Delete User Account (Admin)",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
-            ],
-            "url": {
-              "raw": "{{BASE_URL}}/api/users/{{target_user_id}}",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "users", "{{target_user_id}}"]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "📁 03 - News Articles & Curation",
-      "description": "Editorial workflow, content drafts, scheduled publishing.",
-      "item": [
-        {
-          "name": "📰 Get All Published News (Public)",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{BASE_URL}}/api/news",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "news"]
-            },
-            "description": "Returns approved news + scheduled news whose dates have passed."
-          }
-        },
-        {
-          "name": "🔍 Search News by Keyword (Public)",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{BASE_URL}}/api/news?search=Modi",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "news"],
-              "query": [
-                { "key": "search", "value": "Modi" }
-              ]
-            }
-          }
-        },
-        {
-          "name": "📝 Submit News Draft (Reporter)",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"title\": \"Quantum Computing Breakthrough Achieved\",\n  \"summary\": \"Researchers developed a fault-tolerant qubit design stable at room temperature.\",\n  \"content\": \"In a landmark science publication, a team of global physics researchers announced the stabilization of fault-tolerant room-temperature qubits. This development will accelerate the production of supercomputing hardware globally, bypassing classic cryogenic containment requirements.\",\n  \"category\": \"Technology\",\n  \"tags\": [\"Quantum\", \"Computing\", \"Tech Breakthrough\"],\n  \"status\": \"draft\"\n}",
-              "options": { "raw": { "language": "json" } }
-            },
-            "url": {
-              "raw": "{{BASE_URL}}/api/news",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "news"]
-            },
-            "description": "Saves directly as draft. Set status to 'pending' to submit for editor review."
-          }
-        },
-        {
-          "name": "✏️ Edit / Update News (Reporter / Editor)",
-          "request": {
-            "method": "PUT",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"title\": \"Quantum Computing Breakthrough - Updated Title\",\n  \"status\": \"pending\"\n}",
-              "options": { "raw": { "language": "json" } }
-            },
-            "url": {
-              "raw": "{{BASE_URL}}/api/news/{{news_id}}",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "news", "{{news_id}}"]
-            },
-            "description": "Reporters can only edit drafts, pending, or rejected articles, and NOT already approved live articles."
-          }
-        },
-        {
-          "name": "✅ Approve Article (Publish Now - Editor)",
-          "request": {
-            "method": "PUT",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
-            ],
-            "url": {
-              "raw": "{{BASE_URL}}/api/news/{{news_id}}/approve",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "news", "{{news_id}}", "approve"]
-            }
-          }
-        },
-        {
-          "name": "⏳ Schedule Article (Publish Later - Editor)",
-          "request": {
-            "method": "PUT",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"scheduledPublishDate\": \"2026-06-15T09:00:00.000Z\"\n}",
-              "options": { "raw": { "language": "json" } }
-            },
-            "url": {
-              "raw": "{{BASE_URL}}/api/news/{{news_id}}/approve",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "news", "{{news_id}}", "approve"]
-            },
-            "description": "Pass scheduledPublishDate in body. Article status becomes 'scheduled' and stays hidden from public feed until scheduled date passes."
-          }
-        },
-        {
-          "name": "❌ Reject Draft & Send Feedback (Editor)",
-          "request": {
-            "method": "PUT",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"reason\": \"Verify spelling in first paragraph and resubmit.\"\n}",
-              "options": { "raw": { "language": "json" } }
-            },
-            "url": {
-              "raw": "{{BASE_URL}}/api/news/{{news_id}}/reject",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "news", "{{news_id}}", "reject"]
-            }
-          }
-        },
-        {
-          "name": "🗑️ Delete Article (Admin)",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
-            ],
-            "url": {
-              "raw": "{{BASE_URL}}/api/news/{{news_id}}",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "news", "{{news_id}}"]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "📁 04 - Reporter & Editor Dashboards",
-      "description": "Track reporter drafts and editor approval actions history.",
-      "item": [
-        {
-          "name": "📊 Reporter Stats Dashboard",
-          "request": {
-            "method": "GET",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
-            ],
-            "url": {
-              "raw": "{{BASE_URL}}/api/news/reporter/dashboard",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "news", "reporter", "dashboard"]
-            },
-            "description": "Returns counts for Total, Approved, Pending, Rejected, and Draft articles."
-          }
-        },
-        {
-          "name": "📋 My Draft Articles (Reporter)",
-          "request": {
-            "method": "GET",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
-            ],
-            "url": {
-              "raw": "{{BASE_URL}}/api/news/reporter/articles?status=draft",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "news", "reporter", "articles"],
-              "query": [
-                { "key": "status", "value": "draft" }
-              ]
-            }
-          }
-        },
-        {
-          "name": "📜 Editor Action History Logs",
-          "request": {
-            "method": "GET",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
-            ],
-            "url": {
-              "raw": "{{BASE_URL}}/api/news/editor/history",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "news", "editor", "history"]
-            },
-            "description": "Lists all articles approved, scheduled, or rejected by this editor."
-          }
-        }
-      ]
-    },
-    {
-      "name": "📁 05 - Reader Actions (Likes, Saves, Comments)",
-      "description": "Bookmarking, posting review responses, and toggling likes.",
-      "item": [
-        {
-          "name": "💬 Post Comment on Article",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"text\": \"Fascinating quantum computing breakthroughs!\"\n}",
-              "options": { "raw": { "language": "json" } }
-            },
-            "url": {
-              "raw": "{{BASE_URL}}/api/news/{{news_id}}/comments",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "news", "{{news_id}}", "comments"]
-            }
-          }
-        },
-        {
-          "name": "❤️ Toggle Like",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
-            ],
-            "url": {
-              "raw": "{{BASE_URL}}/api/news/{{news_id}}/like",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "news", "{{news_id}}", "like"]
-            }
-          }
-        },
-        {
-          "name": "🔖 Toggle Bookmark / Save",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
-            ],
-            "url": {
-              "raw": "{{BASE_URL}}/api/news/{{news_id}}/save",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "news", "{{news_id}}", "save"]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "📁 06 - Premium Hybrid Media Upload",
-      "description": "Upload image and video assets to Cloudinary + Local disk backup.",
-      "item": [
-        {
-          "name": "⚡ Upload File (Cloudinary + Local Disk Backup)",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
-            ],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
                 {
-                  "key": "file",
-                  "type": "file",
-                  "src": [],
-                  "description": "Image or Video asset file payload"
+                  "key": "role",
+                  "value": "reporter"
                 }
               ]
+            }
+          }
+        },
+        {
+          "name": "List Editors",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/users?role=editor",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "users"],
+              "query": [
+                {
+                  "key": "role",
+                  "value": "editor"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/users/{{user_id}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "users", "{{user_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Rahul Kumar Sharma\",\n  \"email\": \"rahul.sharma@newsportal.com\",\n  \"role\": \"reporter\"\n}"
             },
             "url": {
-              "raw": "{{BASE_URL}}/api/upload",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "upload"]
+              "raw": "http://localhost:5000/api/users/{{user_id}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "users", "{{user_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Approve/Suspend User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isApproved\": true\n}"
             },
-            "description": "Saves locally inside './data/uploads' and uploads to Cloudinary automatically, returning secure URLs for both."
+            "url": {
+              "raw": "http://localhost:5000/api/users/{{user_id}}/approve",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "users", "{{user_id}}", "approve"]
+            }
+          }
+        },
+        {
+          "name": "Change User Role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"editor\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/users/{{user_id}}/role",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "users", "{{user_id}}", "role"]
+            }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/users/{{user_id}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "users", "{{user_id}}"]
+            }
           }
         }
       ]
     },
     {
-      "name": "📁 07 - Categories, Auditing & Health",
-      "description": "Audit trails, category logs, and system health status.",
+      "name": "5. NEWS MANAGEMENT",
       "item": [
         {
-          "name": "📋 List Categories (Public)",
+          "name": "Create News Article",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Breaking: Government Announces New Policy\",\n  \"summary\": \"The government has announced a comprehensive new policy affecting multiple sectors.\",\n  \"content\": \"In a major announcement today, the government unveiled a comprehensive new policy that will impact various sectors of the economy. The policy aims to boost growth and create employment opportunities. Industry experts have given mixed reactions to the announcement. The implementation will begin from the next quarter with state governments expected to co-fund several projects.\",\n  \"category\": \"Politics\",\n  \"tags\": [\"government\", \"policy\", \"economy\"],\n  \"image\": \"https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=800\",\n  \"breaking\": true,\n  \"trending\": false\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/news",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "news"]
+            }
+          }
+        },
+        {
+          "name": "Get All News",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{BASE_URL}}/api/categories",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "categories"]
+              "raw": "http://localhost:5000/api/news",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "news"]
             }
           }
         },
         {
-          "name": "➕ Add Category (Admin)",
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"category\": \"Global Science\"\n}",
-              "options": { "raw": { "language": "json" } }
-            },
-            "url": {
-              "raw": "{{BASE_URL}}/api/categories",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "categories"]
-            }
-          }
-        },
-        {
-          "name": "📜 Get Audit Activity Logs (Staff)",
+          "name": "Get Pending News",
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
             ],
             "url": {
-              "raw": "{{BASE_URL}}/api/activities",
-              "host": ["{{BASE_URL}}"],
+              "raw": "http://localhost:5000/api/news?status=pending",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "news"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get News by Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/news?category=Politics",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "news"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "Politics"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search News",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/news?search=government",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "news"],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "government"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Single News",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/news/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "news", "1"]
+            }
+          }
+        },
+        {
+          "name": "Update News",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated: Government Announces New Policy\",\n  \"summary\": \"Updated summary\",\n  \"content\": \"Updated content here\",\n  \"category\": \"Politics\",\n  \"tags\": [\"updated\", \"policy\"]\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/news/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "news", "1"]
+            }
+          }
+        },
+        {
+          "name": "Approve News",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/news/1/approve",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "news", "1", "approve"]
+            }
+          }
+        },
+        {
+          "name": "Reject News",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Content needs more sources and verification\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/news/1/reject",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "news", "1", "reject"]
+            }
+          }
+        },
+        {
+          "name": "Schedule News",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"scheduledPublishDate\": \"2025-07-20T10:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/news/1/schedule",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "news", "1", "schedule"]
+            }
+          }
+        },
+        {
+          "name": "Delete News",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/news/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "news", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. NEWS INTERACTIONS",
+      "item": [
+        {
+          "name": "Add Comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"This is a great article with valuable insights!\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/news/1/comments",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "news", "1", "comments"]
+            }
+          }
+        },
+        {
+          "name": "Like News",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/news/1/like",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "news", "1", "like"]
+            }
+          }
+        },
+        {
+          "name": "Save News",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/news/1/save",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "news", "1", "save"]
+            }
+          }
+        },
+        {
+          "name": "Get All Comments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/news/comments/all",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "news", "comments", "all"]
+            }
+          }
+        },
+        {
+          "name": "Delete Comment",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/news/1/comments/{{comment_id}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "news", "1", "comments", "{{comment_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. CATEGORIES",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/categories",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "categories"]
+            }
+          }
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category\": \"Science\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/categories",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "categories"]
+            }
+          }
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/categories/Science",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "categories", "Science"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. ACTIVITIES & LOGS",
+      "item": [
+        {
+          "name": "Get Activity Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/activities",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
               "path": ["api", "activities"]
             }
           }
-        },
+        }
+      ]
+    },
+    {
+      "name": "9. REPORTER SPECIFIC",
+      "item": [
         {
-          "name": "💚 Server Health Check (Public)",
+          "name": "Reporter Dashboard",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
             "url": {
-              "raw": "{{BASE_URL}}/api/health",
-              "host": ["{{BASE_URL}}"],
-              "path": ["api", "health"]
+              "raw": "http://localhost:5000/api/news/reporter/dashboard",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "news", "reporter", "dashboard"]
+            }
+          }
+        },
+        {
+          "name": "Reporter Articles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/news/reporter/articles?status=pending",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "news", "reporter", "articles"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending"
+                }
+              ]
             }
           }
         }
       ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "jwt_token",
+      "value": "paste_your_token_here",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "paste_user_id_here",
+      "type": "string"
+    },
+    {
+      "key": "comment_id",
+      "value": "paste_comment_id_here",
+      "type": "string"
     }
   ]
 }
