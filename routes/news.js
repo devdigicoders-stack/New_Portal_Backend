@@ -1,5 +1,7 @@
 import express from 'express';
-import { News, User, Activity } from '../db.js';
+import { News } from '../models/News.js';
+import { User } from '../models/User.js';
+import { Activity } from '../models/Activity.js';
 import { authenticate, authorize } from '../middleware/auth.js';
 import jwt from 'jsonwebtoken';
 

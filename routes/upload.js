@@ -57,28 +57,38 @@ router.post('/', upload.single('file'), async (req, res) => {
 
   try {
     const localFilePath = req.file.path.replace(/\\/g, '/'); // standardise slash format
-    
-    // Upload local backup to Cloudinary
-    const result = await cloudinary.uploader.upload(localFilePath, {
-      folder: 'NewsPortal_Uploads',
-      resource_type: 'auto'
-    });
-
-    // Generate local access url
     const localUrl = `/uploads/${req.file.filename}`;
+    
+    let cloudinaryResult = null;
+    let uploadSuccess = false;
+
+    try {
+      // Upload local backup to Cloudinary
+      cloudinaryResult = await cloudinary.uploader.upload(localFilePath, {
+        folder: 'NewsPortal_Uploads',
+        resource_type: 'auto'
+      });
+      uploadSuccess = true;
+    } catch (clErr) {
+      console.warn('Cloudinary upload failed, falling back to local static URL:', clErr);
+    }
+
+    const finalUrl = uploadSuccess && cloudinaryResult ? cloudinaryResult.secure_url : localUrl;
 
     res.status(201).json({
-      message: 'Media uploaded successfully to Cloudinary and local backup!',
-      url: result.secure_url,
+      message: uploadSuccess
+        ? 'Media uploaded successfully to Cloudinary and local backup!'
+        : 'Media uploaded successfully to local storage (Cloudinary fallback)!',
+      url: finalUrl,
       localPath: localUrl,
-      publicId: result.public_id,
-      format: result.format,
-      resourceType: result.resource_type,
+      publicId: cloudinaryResult ? cloudinaryResult.public_id : null,
+      format: cloudinaryResult ? cloudinaryResult.format : path.extname(req.file.originalname).substring(1),
+      resourceType: cloudinaryResult ? cloudinaryResult.resource_type : (req.file.mimetype.startsWith('video/') ? 'video' : 'image'),
       originalName: req.file.originalname,
       sizeBytes: req.file.size
     });
   } catch (error) {
-    console.error('Cloudinary / Upload error:', error);
+    console.error('File processing error:', error);
     res.status(500).json({ error: 'Failed to process media upload.' });
   }
 });

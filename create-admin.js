@@ -1,4 +1,6 @@
-import { connectDB, User, Activity } from './db.js';
+import { connectDB } from './db.js';
+import { User } from './models/User.js';
+import { Activity } from './models/Activity.js';
 import bcrypt from 'bcryptjs';
 
 async function createAdmin() {
@@ -14,6 +16,7 @@ async function createAdmin() {
     console.log('📝 Example: node create-admin.js "Super Admin" "admin@newsportal.com" "securepass123"\n');
     process.exit(1);
   }
+  
 
   try {
     // 1. Establish database connection

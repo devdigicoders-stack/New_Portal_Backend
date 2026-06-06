@@ -1,5 +1,8 @@
 import express from 'express';
-import { User, News, Category, Activity } from '../db.js';
+import { User } from '../models/User.js';
+import { News } from '../models/News.js';
+import { Category } from '../models/Category.js';
+import { Activity } from '../models/Activity.js';
 import { authenticate, authorize } from '../middleware/auth.js';
 import bcrypt from 'bcryptjs';
 

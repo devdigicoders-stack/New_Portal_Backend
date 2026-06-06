@@ -1,5 +1,6 @@
 import express from 'express';
-import { Category, Activity } from '../db.js';
+import { Category } from '../models/Category.js';
+import { Activity } from '../models/Activity.js';
 import { authenticate, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
